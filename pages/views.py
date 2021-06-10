@@ -1,6 +1,7 @@
 import bisect
 import logging
 
+from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
@@ -200,32 +201,32 @@ class MapaPageView(AuthMixin, TemplateView):
                         .order_by('klient').values('klient_id').distinct())
 
             # logger.warning(context['Klienci'].query)
-
-        if not (request.POST.get('choose') == ''):
-            gmaps = googlemaps.Client(key='AIzaSyByyU8uYPlEpanMFDLhhFgespHrLc4w8SQ')
-            # logger.warning("DUPA")
-            for klient in context['Klienci']:
-                if (klient.lat is None) | (klient.long is None):
-                    geocode_result = gmaps.geocode(
-                        address=klient.Nazwa + ', ' + klient.Ulica + ' ' + klient.Numer + ', ' + klient.Miejscowosc,
-                        components={"postal_code": klient.Kodpocztowy},
-                        region='PL',
-                        language='PL')
-                    logger.warning("SZUKA")
-                    if geocode_result:
-                        klient.lat = geocode_result[0]["geometry"]["location"]["lat"]
-                        klient.long = geocode_result[0]["geometry"]["location"]["lng"]
-                        klient.save()
-                        logger.warning("ZAPISUJE")
-                    else:
-                        klient.lat = 0
-                        klient.long = 0
-                        klient.save()
-                        logger.warning("NIE ZAPISUJE")
-                if klient.Vxx is None:
-                    klient.Vxx = wyszukajkod(klient.Kodpocztowy)
-                    klient.save()
-                    logger.warning("ZAPISUJE HANDLOWCA")
+        #
+        # if not (request.POST.get('choose') == ''):
+        #     gmaps = googlemaps.Client(key='AIzaSyByyU8uYPlEpanMFDLhhFgespHrLc4w8SQ')
+        #     # logger.warning("DUPA")
+        #     for klient in context['Klienci']:
+        #         if (klient.lat is None) | (klient.long is None):
+        #             geocode_result = gmaps.geocode(
+        #                 address=klient.Nazwa + ', ' + klient.Ulica + ' ' + klient.Numer + ', ' + klient.Miejscowosc,
+        #                 components={"postal_code": klient.Kodpocztowy},
+        #                 region='PL',
+        #                 language='PL')
+        #             logger.warning("SZUKA")
+        #             if geocode_result:
+        #                 klient.lat = geocode_result[0]["geometry"]["location"]["lat"]
+        #                 klient.long = geocode_result[0]["geometry"]["location"]["lng"]
+        #                 klient.save()
+        #                 logger.warning("ZAPISUJE")
+        #             else:
+        #                 klient.lat = 0
+        #                 klient.long = 0
+        #                 klient.save()
+        #                 logger.warning("NIE ZAPISUJE")
+        #         if klient.Vxx is None:
+        #             klient.Vxx = wyszukajkod(klient.Kodpocztowy)
+        #             klient.save()
+        #             logger.warning("ZAPISUJE HANDLOWCA")
 
         # logger.warning(request.POST)
 
