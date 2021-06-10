@@ -23,7 +23,7 @@ class Tugger(models.Model):
 
 # Create your models here.
 class Klienci(models.Model):
-    SAP = models.IntegerField()
+    SAP = models.IntegerField(unique=True)
     Nazwa = models.TextField(max_length=50)
     Ulica = models.TextField(max_length=100)
     Numer = models.TextField(max_length=10)
@@ -243,7 +243,7 @@ class RealizacjeVNA(models.Model):
 
 
 class RealizacjeAGV(models.Model):
-    klient = models.ForeignKey(Klienci, on_delete=models.CASCADE, )
+    klient = models.ForeignKey(Klienci, on_delete=models.CASCADE, to_field='SAP')
 
     class TYP(models.TextChoices):
         STATIONERY = "S", _('Stacjonarna')
