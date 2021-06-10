@@ -1,7 +1,7 @@
-import bisect
-import logging
+import bisect, logging, json
 
 from django.shortcuts import render
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
@@ -231,6 +231,33 @@ class MapaPageView(AuthMixin, TemplateView):
         # logger.warning(request.POST)
 
         return render(request, self.template_name, context)
+
+
+def load_infowindow(request):
+    if request.method == 'POST':
+        # request_data = request.POST.get('SAP', '')
+        # request_data = request.data['SAP']
+        request_data = request.POST['SAP']
+        k = Klienci.objects.filter(SAP=request_data).get()
+        ###t = RealizacjeTugger.objects.filter(klient_id=request_data).all()
+        #objects.all().filter(SAP=request_data).order_by('Data')
+        # request_data = "SAP"
+        # do something
+
+        response_data = {}
+        response_data['infowindow'] = "<b>" + request_data + "</b>, </br>" + k.Nazwa + "</br><b>V" + k.Vxx + "</b></br>"
+        ###for tug in t:
+        ###    response_data['infowindow'] += "<b>S/N: " + tug.numer_seryjny + "</b> " + tug.typ + " / " + tug.podnoszenie + " / " + tug.wymiar + "</br>"
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
+
+
+def load_data(request):
+    if request.method == 'POST':
+        response_data = {}
+        if request.POST['typ'] == "TT":
+            response_data = Klienci.objects.all().filter(Vxx=request.POST['Vxx'] if request.POST['Vxx'] == "" else "")[0:100]
+
+        return HttpResponse(json.dumps(response_data), content_type="application/json")
 
 
 def wyszukajkod(key):
