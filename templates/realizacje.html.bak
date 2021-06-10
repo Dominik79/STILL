@@ -1,0 +1,99 @@
+<!-- templates/about.html -->
+{% extends 'base.html' %}
+{% load leaflet_tags %}
+
+{% block content %}
+<div class="HeightTaker container-fluid">
+    <div class="HeightTaker container-fluid">
+        <div class="Wrapper row">
+
+            <div class="LeftNavigation col-md-auto">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" id="oddzialy" href="#">Oddziały</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" id="wozki" href="#">Wózki</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Link</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">Disabled</a>
+                    </li>
+                </ul>
+
+            </div>
+            <div class=" col Content" id="mainmap">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+var map = L.map('mainmap', {
+    minZoom: 0,
+    maxZoom: 20
+});
+
+
+var googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
+    maxZoom: 20,
+    subdomains:['mt0','mt1','mt2','mt3']
+}).addTo(map);
+
+map.setView([52,18.6], 7);
+
+var layerGroup = L.layerGroup().addTo(map);
+
+    // create custom icon
+    var STILLIcon = L.icon({
+        iconUrl: 'http://127.0.0.1:8000/static/img/logo.gif',
+        iconSize: [66, 25], // size of the icon
+        popupAnchor: [0,-15]
+        });
+
+    var TruckIcon = L.icon({
+        iconUrl: 'http://127.0.0.1:8000/static/img/truck.png',
+        iconSize: [64, 68], // size of the icon
+        popupAnchor: [0,-15]
+        });
+
+        // create popup contents
+    var customPopup = "Mozilla Toronto Offices<br/><img src='http://joshuafrazier.info/images/maptime.gif' alt='maptime logo gif' width='350px'/>";
+
+    // specify popup options
+    var customOptions =
+        {
+        'maxWidth': '500',
+        'className' : 'custom'
+        }
+
+<!--var marker = new L.Marker([50.2477356, 19.0368231], {icon: firefoxIcon}).bindPopup(customPopup,customOptions).addTo(map);-->
+
+$('#oddzialy').click(function() {
+layerGroup.clearLayers();
+$.getJSON('/data', { typ : 'oddzialy' }, function(data) {
+$.each(data, function( index, value) {
+    var marker = new L.Marker([value['lat'], value['long']], {icon: STILLIcon}).bindPopup('<b>'+value['nazwa']+'</b></br>'+value['opis'],customOptions).addTo(layerGroup);
+});
+});
+});
+
+$('#wozki').click(function() {
+layerGroup.clearLayers();
+$.getJSON('/data', { typ : 'wozki' }, function(data) {
+$.each(data, function( index, value) {
+    var marker = new L.Marker([value['lat'], value['long']], {icon: TruckIcon}).bindPopup('<b>'+value['nazwa']+'</b></br>'+value['opis'],customOptions).addTo(layerGroup);
+});
+});
+});
+
+  </script>
+
+{% endblock %}
+
+
+<!--[["Pozna?", "{\"type\": \"Point\", \"coordinates\": [52.3269698, 17.0159071]}"], ["Warszawa", "{\"type\": \"Point\", \"coordinates\": [52.1139293, 21.0137226]}"], ["Katowice", "{\"type\": \"Point\", \"coordinates\": [50.3724025, 19.1268855]}"], ["Gda?sk", "{\"type\": \"Point\", \"coordinates\": [54.4145973, 18.4804067]}"], ["Mrowino", "{\"type\": \"Point\", \"coordinates\": [52.5044219, 16.6986078]}"]]-->
