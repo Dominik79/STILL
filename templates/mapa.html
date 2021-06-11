@@ -59,26 +59,30 @@ var map = new google.maps.Map(document.getElementById('map'), {zoom: 7, center: 
 if (document.getElementById('id_choose').value=="T") {
     //ikona_url = "https://m.still.pl/fileadmin/de/Microsites/Routenzuege_Kampagne/Teaser/STILL_Icons_Routenzuege.svg"
     ikona_url = "/static/img/TT.svg"
-    
+    ikona_url = "/static/img/STILL.svg"
 }
 if (document.getElementById('id_choose').value=="R") {
     ikona_url = "/static/img/RACKS.png"
+    ikona_url = "/static/img/STILL.svg"
 }
 if (document.getElementById('id_choose').value=="S") {
     ikona_url = "/static/img/VNA.png"
+    ikona_url = "/static/img/STILL.svg"
 }
 if (document.getElementById('id_choose').value=="A") {
     ikona_url = "/static/img/AGV.png"
+    ikona_url = "/static/img/STILL.svg"
 }
 if (document.getElementById('id_choose').value=="") {
     ikona_url = "/static/img/truck.png"
+    ikona_url = "/static/img/STILL.svg"
     //ikona_url = "https://freevectorlogo.net/wp-content/uploads/2012/10/stihl-vector-logo.png"
     
 }
 
 var icon = {
     url: ikona_url, // url
-    scaledSize: new google.maps.Size(32, 32), // scaled size
+    scaledSize: new google.maps.Size(64, 18), // scaled size
     origin: new google.maps.Point(0,0), // origin
     anchor: new google.maps.Point(0, 0) // anchor
     };

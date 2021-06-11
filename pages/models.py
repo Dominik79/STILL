@@ -50,7 +50,7 @@ class Telefony(models.Model):
 
 # Create your models here.
 class RealizacjeTugger(models.Model):
-    klient = models.ForeignKey(Klienci, on_delete=models.CASCADE, )
+    klient = models.ForeignKey(Klienci, on_delete=models.CASCADE, to_field='SAP')
 
     numer_seryjny = models.TextField(max_length=12)
 
@@ -95,7 +95,7 @@ class RealizacjeTugger(models.Model):
 
 
 class RealizacjeRacks(models.Model):
-    klient = models.ForeignKey(Klienci, on_delete=models.CASCADE, )
+    klient = models.ForeignKey(Klienci, on_delete=models.CASCADE, to_field='SAP')
 
     class TYP(models.TextChoices):
         PALETOWE = "P", _('Paletowe')
@@ -152,7 +152,7 @@ class RealizacjeRacks(models.Model):
 
 
 class RealizacjeVNA(models.Model):
-    klient = models.ForeignKey(Klienci, on_delete=models.CASCADE, )
+    klient = models.ForeignKey(Klienci, on_delete=models.CASCADE, to_field='SAP')
 
     class TYP(models.TextChoices):
         MX_X = "M", _('MX-X')
