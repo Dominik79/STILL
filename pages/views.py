@@ -125,7 +125,7 @@ class MapaPageView(AuthMixin, TemplateView):
         # logger.warning(web.properties["Url"])
 
         context['form'] = TypyForm()
-        context['Klienci'] = Klienci.objects.all().exclude(Vxx__isnull=True)
+        #context['Klienci'] = Klienci.objects.all().exclude(Vxx__isnull=True)
         return context
 
     # def get(self, request, *args, **kwargs):
