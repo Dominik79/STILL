@@ -39,10 +39,21 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'pages',
 #    'pages.apps.PagesConfig',
-
-    'easy_maps',
+    'leaflet',
+#    'easy_maps',
     'crispy_forms',
 ]
+
+LEAFLET_CONFIG = {
+    'DEFAULT_CENTER': (52.0688246, 19.4709683),
+    'DEFAULT_ZOOM': 7,
+    'MIN_ZOOM': 4,
+    'MAX_ZOOM': 12,
+    'DEFAULT_PRECISION': 6,
+    'RESET_VIEW': False,
+#    'TILES': [('Satellite', 'http://server/a/...', {'attribution': '&copy; Big eye', 'maxZoom': 16}), ('Streets', 'http://server/b/...', {'attribution': '&copy; Contributors'})],
+    'MINIMAP': True,
+}
 
 MIDDLEWARE = [
 #    'django.middleware.security.SecurityMiddleware',

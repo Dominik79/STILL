@@ -1,59 +1,126 @@
 <!-- templates/about.html -->
 {% extends 'base.html' %}
-<!-- {% load leaflet_tags %}  -->
+{% load l10n %}
 
 {% block content %}
 <div class="HeightTaker container-fluid">
     <div class="HeightTaker container-fluid">
         <div class="Wrapper row">
-
             <div class="LeftNavigation col-md-auto">
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#">Advanced Application</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Dział handlowy</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Serwis</a>
-                    </li>
-                </ul>
-
-                <ol>
-                    <li>PupA</li>
-                    {% if tugger %}
-<li>DipA</li>
-                    {% endif %}
-      {% for tug in tugger %}
-        <li>{{ tug.Produkt }}</li>
-      {% endfor %}
-    </ol>
+                    {% load crispy_forms_tags %}
+                    <form method="post" id="mapform">
+                        {% csrf_token %}
+                        {% crispy form form.helper %}
+                      </form>
 
             </div>
-            <div class=" col Content" id="mainmap">
-
+            <div class=" col Content" id="map" style="width: 100%; height: 100%; position: relative; overflow: hidden;">
             </div>
         </div>
     </div>
 </div>
-<!--
-<script>
+<script
+        src="https://maps.google.com/maps/api/js?key=AIzaSyByyU8uYPlEpanMFDLhhFgespHrLc4w8SQ&language=pl"
+        type="text/javascript"></script>
 
-var map = L.map('mainmap', {
-    minZoom: 0,
-    maxZoom: 20
+<script type="text/javascript">
+$(function(){
+    $.ajaxSetup({
+         beforeSend: function(xhr, settings) {
+             function getCookie(name) {
+                 var cookieValue = null;
+                 if (document.cookie && document.cookie != '') {
+                     var cookies = document.cookie.split(';');
+                     for (var i = 0; i < cookies.length; i++) {
+                         var cookie = jQuery.trim(cookies[i]);
+                         // Does this cookie string begin with the name we want?
+                     if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                         break;
+                     }
+                 }
+             }
+             return cookieValue;
+             }
+             if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                 // Only send the token to relative URLs i.e. locally.
+                 xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+             }
+         }
+    });
 });
 
 
-var googleStreets = L.tileLayer('http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',{
-    maxZoom: 20,
-    subdomains:['mt0','mt1','mt2','mt3']
-}).addTo(map);
 
-map.setView([52,18.6], 7);
+var map = new google.maps.Map(document.getElementById('map'), {zoom: 7, center: {lat: 52.0688246, lng: 19.4709683}});
 
+if (document.getElementById('id_choose').value=="T") {
+    //ikona_url = "https://m.still.pl/fileadmin/de/Microsites/Routenzuege_Kampagne/Teaser/STILL_Icons_Routenzuege.svg"
+    ikona_url = "/static/img/TT.svg"
+    ikona_url = "/static/img/STILL.svg"
+}
+if (document.getElementById('id_choose').value=="R") {
+    ikona_url = "/static/img/RACKS.png"
+    ikona_url = "/static/img/STILL.svg"
+}
+if (document.getElementById('id_choose').value=="S") {
+    ikona_url = "/static/img/VNA.png"
+    ikona_url = "/static/img/STILL.svg"
+}
+if (document.getElementById('id_choose').value=="A") {
+    ikona_url = "/static/img/AGV.png"
+    ikona_url = "/static/img/STILL.svg"
+}
+if (document.getElementById('id_choose').value=="") {
+    ikona_url = "/static/img/truck.png"
+    ikona_url = "/static/img/STILL.svg"
+    //ikona_url = "https://freevectorlogo.net/wp-content/uploads/2012/10/stihl-vector-logo.png"
 
+}
+
+var icon = {
+    url: ikona_url, // url
+    scaledSize: new google.maps.Size(64, 18), // scaled size
+    origin: new google.maps.Point(0,0), // origin
+    anchor: new google.maps.Point(0, 0) // anchor
+    };
+
+    var image = ikona_url;
+    var infowindow = new google.maps.InfoWindow({content: ''});
+
+function add_marker(racer_id, tytul, poslat, poslng, ikona, notatka) {
+    var marker = new google.maps.Marker({map: map, position: { lat: poslat , lng: poslng } , title: tytul, clickable: true, animation: google.maps.Animation.DROP, icon: ikona});
+    marker.note = notatka;
+
+    google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent("Loading data ...");
+        infowindow.open(map, this);
+        $.ajax({
+          url : "/load_infowindow/", // the endpoint
+          type : "POST", // http method
+          dataType: 'json',
+          data: {
+                    SAP : this.note,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+          // handle a successful response
+          success : function(ret_json) {
+              infowindow.setContent(ret_json.infowindow);
+          }
+        });
+    });
+    return marker;
+}
+
+{% localize off %}
+{% for Klient in Klienci %}
+    add_marker({{ Klient.SAP }}, '{{ Klient.Nazwa }}',  {{ Klient.lat }}, {{ Klient.long }} , icon, '{{ Klient.SAP }}');
+{% endfor %}
+
+{% endlocalize %}
+<!--add_marker({{ Klient.SAP }}, '{{ Klient.Nazwa }}',  {{ Klient.lat }}, {{ Klient.long }} , icon, '<b>TEST zew</b> 2');-->
+<!--console.log('{{ Klient.Nazwa }}');-->
 </script>
- -->
+
+
 {% endblock %}

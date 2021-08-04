@@ -141,7 +141,7 @@ class MapaPageView(AuthMixin, TemplateView):
             # context['Klienci'] = Klienci.objects.all()
             # k = Klienci.objects.all().exclude(Vxx__isnull=True).filter(Vxx="12")
             # k = Klienci.objects.all().exclude(Vxx__isnull=True)
-            context['Klienci'] = Klienci.objects.all().exclude(Vxx__isnull=True)
+            ##context['Klienci'] = Klienci.objects.all().exclude(Vxx__isnull=True)
 
         if (request.POST.get('choose') == 'T'):
             context['form'] = TuggerForm(request.POST)
@@ -245,7 +245,7 @@ def load_infowindow(request):
         # do something
 
         response_data = {}
-        response_data['infowindow'] = "<b>" + request_data + "</b>, </br>" + k.Nazwa + "</br><b>V" + k.Vxx + "</b></br>"
+        response_data['infowindow'] = "<b>" + k.Nazwa + "</b></br>" + request_data + "</br><b>V" + k.Vxx + "</b></br>"
         ###for tug in t:
         ###    response_data['infowindow'] += "<b>S/N: " + tug.numer_seryjny + "</b> " + tug.typ + " / " + tug.podnoszenie + " / " + tug.wymiar + "</br>"
         return HttpResponse(json.dumps(response_data), content_type="application/json")
