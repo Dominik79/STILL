@@ -103,6 +103,8 @@ class RealizacjeRacks(models.Model):
         SHUTTLE = "S", _('Shuttle')
         ANTRESOLA = "A", _('Antresola')
         DRIVE_IN = "D", _('Drive-In')
+        W = "W", _('W')
+        V = "V", _('V')
 
     typ = models.CharField(
         max_length=1,
@@ -149,7 +151,7 @@ class RealizacjeRacks(models.Model):
     siatka = models.BooleanField(verbose_name='Siatka')
     oslony = models.BooleanField(verbose_name='Ochrony')
     siatka_tylna = models.BooleanField(verbose_name='Siatka tylna')
-
+    zlecenie = models.IntegerField()
 
 class RealizacjeVNA(models.Model):
     klient = models.ForeignKey(Klienci, on_delete=models.CASCADE, to_field='SAP')
@@ -179,6 +181,7 @@ class RealizacjeVNA(models.Model):
     )
 
     class PROWADZENIE(models.TextChoices):
+        MZFIZF = "S", _('Mechaniczno-Indukcyjne')
         MZF = "M", _('Mechaniczne')
         IZF = "I", _('Indukcyjne')
         BRAK = "N", _('Swobodnie prowadzone')
@@ -194,6 +197,7 @@ class RealizacjeVNA(models.Model):
         INDUKCYJNE = "B", _('Blachy')
         RFID = "R", _('RFID')
         OPTYCZNE = "O", _('Optyczne')
+        BRAK = "N", _('Brak')
 
     hamowanie = models.CharField(
         max_length=1,

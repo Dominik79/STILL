@@ -44,6 +44,14 @@ INSTALLED_APPS = [
     'crispy_forms',
 ]
 
+if os.name == 'nt':
+    OSGEO_VENV = Path(__file__).parents[1] / 'venv/Lib/site-packages/osgeo/'
+    GEOS_LIBRARY_PATH = str(OSGEO_VENV / 'geos_c.dll')
+    GDAL_LIBRARY_PATH = str(OSGEO_VENV / 'gdal303.dll')
+    os.environ["PATH"] += os.pathsep + str(OSGEO_VENV)
+
+#GDAL_LIBRARY_PATH = r'C:\Users\pl6156\OneDrive - KION Group\WEB\Referencje\venv\Lib\site-packages\osgeo'
+
 LEAFLET_CONFIG = {
     'DEFAULT_CENTER': (52.0688246, 19.4709683),
     'DEFAULT_ZOOM': 7,

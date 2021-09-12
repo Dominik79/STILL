@@ -169,6 +169,7 @@ class MapaPageView(AuthMixin, TemplateView):
                 'korytarz') == None else request.POST.getlist('korytarz')) \
                         .order_by('klient').values('klient_id').distinct())
 
+
         if (request.POST.get('choose') == 'S'):
             context['form'] = VNAForm(request.POST)
             context['Klienci'] = Klienci.objects.all() \
@@ -200,7 +201,7 @@ class MapaPageView(AuthMixin, TemplateView):
                 'truck') == None else request.POST.getlist('truck')) \
                         .order_by('klient').values('klient_id').distinct())
 
-            # logger.warning(context['Klienci'].query)
+            #logger.warning(context['Klienci'].query)
         #
         # if not (request.POST.get('choose') == ''):
         #     gmaps = googlemaps.Client(key='AIzaSyByyU8uYPlEpanMFDLhhFgespHrLc4w8SQ')
@@ -229,6 +230,7 @@ class MapaPageView(AuthMixin, TemplateView):
         #             logger.warning("ZAPISUJE HANDLOWCA")
 
         # logger.warning(request.POST)
+        #logger.warning(context['Klienci'][0])
 
         return render(request, self.template_name, context)
 
