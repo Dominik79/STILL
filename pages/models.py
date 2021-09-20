@@ -103,8 +103,8 @@ class RealizacjeRacks(models.Model):
         SHUTTLE = "S", _('Shuttle')
         ANTRESOLA = "A", _('Antresola')
         DRIVE_IN = "D", _('Drive-In')
-        W = "W", _('W')
-        V = "V", _('V')
+        W = "W", _('Wspornikowe')
+        V = "V", _('Półkowe')
 
     typ = models.CharField(
         max_length=1,
