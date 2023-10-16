@@ -42,13 +42,15 @@ INSTALLED_APPS = [
     'leaflet',
 #    'easy_maps',
     'crispy_forms',
+#    'django.contrib.gis',
 ]
 
-if os.name == 'nt':
-    OSGEO_VENV = Path(__file__).parents[1] / 'venv/Lib/site-packages/osgeo/'
-    GEOS_LIBRARY_PATH = str(OSGEO_VENV / 'geos_c.dll')
-    GDAL_LIBRARY_PATH = str(OSGEO_VENV / 'gdal303.dll')
-    os.environ["PATH"] += os.pathsep + str(OSGEO_VENV)
+#### GDAL = OFF
+#if os.name == 'nt':
+#    OSGEO_VENV = Path(__file__).parents[1] / 'venv/Lib/site-packages/osgeo/'
+#    GEOS_LIBRARY_PATH = str(OSGEO_VENV / 'geos_c.dll')
+#    GDAL_LIBRARY_PATH = str(OSGEO_VENV / 'gdal303.dll')
+#    os.environ["PATH"] += os.pathsep + str(OSGEO_VENV)
 
 #GDAL_LIBRARY_PATH = r'C:\Users\pl6156\OneDrive - KION Group\WEB\Referencje\venv\Lib\site-packages\osgeo'
 
@@ -100,13 +102,27 @@ WSGI_APPLICATION = 'STILL.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
+DB_PATH = os.path.join(BASE_DIR, 'db.sqlite3')
+try:
+    from shutil import copyfile
+    DB_PATH = "/tmp/db.sqlite3"
+    copyfile(os.path.join(BASE_DIR, 'db.sqlite3'), DB_PATH)
+except:
+    pass
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': DB_PATH,
     }
 }
+
+
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
 
 # Password validation
