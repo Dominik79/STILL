@@ -1,7 +1,8 @@
 from django.urls import path
 
 from . import views
-from .views import HomePageView, KlienciPageView, MapaPageView, KontaktPageView, BSHPageView, load_infowindow, api
+from pages.views import HomePageView, KlienciPageView, MapaPageView, KontaktPageView, BSHPageView, load_infowindow, \
+    apiexternaltasktrigger, apiexternaliotdevice, apiexternaltaskactivejobs
 
 urlpatterns = [
     path('', HomePageView.as_view(), name='home'),
@@ -11,5 +12,7 @@ urlpatterns = [
     path('kontakt/', KontaktPageView.as_view(), name='kontakt'),
     path('bsh/', BSHPageView.as_view(), name='bsh'),
     path('load_infowindow/', load_infowindow, name='load_infowindow'),
-    path('api/', api, name='api'),
+    path('api/externaltask/trigger', apiexternaltasktrigger, name='apiexternaltasktrigger'),
+    path('api/externaliotdevice', apiexternaliotdevice, name='apiexternaliotdevice'),
+    path('api/externaltask/active/jobs', apiexternaltaskactivejobs, name='apiexternaltaskactivejobs'),
 ]

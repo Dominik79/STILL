@@ -1,4 +1,4 @@
-import bisect, logging, json, requests
+import bisect, logging, json, requests, os, time
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -97,6 +97,11 @@ class TelefonyPageView(AuthMixin, TemplateView):
 class KontaktPageView(AuthMixin, TemplateView):
     template_name = 'kontakt.html'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if os.path.exists("db.sqlite3"):
+            context['wersja_bazy'] = time.strftime('%Y-%m-%d', time.localtime(os.path.getmtime("db.sqlite3")))
+        return context
 
 class MapaPageView(AuthMixin, TemplateView):
     template_name = 'mapa.html'
@@ -323,29 +328,88 @@ def wyszukajkod(key):
     return listakod[temp - 1][1]
 
 
-def api(request):
-    logger.warning("START")
+def apiexternaltasktrigger(request):
     headers = {
         'x-api-key': 'DCRMbxspYS5wADsytUBPV7QjC9XEt7jS2a0eJloZ',
         'key-id': 'dc7ujpb30g',
+        'Content-Type': 'application/json; charset=utf-8'
     }
-    data = {
-        'taskld': request
-    }
-
-    api_url = 'https://api.anyfleet.idealworks.com/externaltask/trigger'
+    #api_url = 'https://api.anyfleet.idealworks.com/externaltask/trigger?taskID=cfa46dd5-c6f1-4f22-8ca9-f188a3f86dd3'
+    api_url = 'https://api.anyfleet.idealworks.com/externaltask/trigger?taskID='+request.GET['Id']
 
     try:
-        response = requests.get(api_url, headers=headers, json=data)
-
-        # Sprawdzamy, czy otrzymaliśmy odpowiedź sukcesu (status code 200)
+        response = requests.get(api_url, headers=headers, verify=False)
+        # logger.warning(response.request.url)
+        # logger.warning(response.request.body)
+        # logger.warning(response.request.headers)
         if response.status_code == 200:
-            # Jeśli tak, zwracamy odpowiedź w formie JSON
-
-            return JsonResponse({'response': response.json()})
+            inner = f"""
+            """
+            return JsonResponse({'response': response.json(), 'inner': inner})
         else:
-            # W przypadku innego kodu odpowiedzi, zwracamy komunikat o błędzie
-            return JsonResponse({'error': 'Something went wrong'}, status=response.status_code)
+            return JsonResponse({'response': response.json()}, status=response.status_code)
     except Exception as e:
         # Obsługa błędów, np. gdy nie uda się połączyć z zewnętrznym API
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+def apiexternaliotdevice(request):
+    headers = {
+        'x-api-key': 'DCRMbxspYS5wADsytUBPV7QjC9XEt7jS2a0eJloZ',
+        'key-id': 'dc7ujpb30g',
+        'Content-Type': 'application/json; charset=utf-8'
+    }
+    api_url = 'https://api.anyfleet.idealworks.com/externaliotdevice?deviceid=34e827ca-f608-43e1-b698-64f7984005b2'
+    try:
+        response = requests.get(api_url, headers=headers, verify=False)
+        if response.status_code == 200:
+            inner = f"""
+Adres IP: {response.json()['ipAddress']} | 
+Bateria: {response.json()['batteryState']['batteryCharge']} % / {response.json()['batteryState']['batteryTemperature']} &deg;C
+"""
+            return JsonResponse({'response': response.json(), 'inner': inner})
+        else:
+            return JsonResponse({'response': response.json()}, status=response.status_code)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+def apiexternaltaskactivejobs(request):
+    headers = {
+        'x-api-key': 'DCRMbxspYS5wADsytUBPV7QjC9XEt7jS2a0eJloZ',
+        'key-id': 'dc7ujpb30g',
+        'Content-Type': 'application/json; charset=utf-8'
+    }
+    api_url = 'https://api.anyfleet.idealworks.com/externaltask/active/jobs?mapid='+request.GET['Id']
+    try:
+        response = requests.get(api_url, headers=headers, verify=False)
+        inner = """
+<table class="table table-striped table-dark table-hover">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Misja</th>
+      <th scope="col">Status</th>
+      <th scope="col">Wykonano</th>
+    </tr>
+  </thead>
+  <tbody>        
+        """
+        if response.status_code == 200:
+            for row_number, row in enumerate(response.json(), start=1):
+                inner += f"""
+<tr>
+      <th scope="row">{row_number}</th>
+      <td>{row['taskName']}</td>
+      <td>{row['status']}</td>
+      <td>{row['progression']} %</td>
+</tr>
+            """
+            inner += """
+ </tbody>
+</table>           
+            """
+            return JsonResponse({'response': response.json(), 'inner': inner})
+        else:
+            return JsonResponse({'response': response.json()}, status=response.status_code)
+    except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

@@ -6,11 +6,10 @@
         <div class="Wrapper row">
 
             <div class=" col Content">
-                <div> Wybór misji:</div>
-
-                <button id="misja" class="btn btn.sm btn-outline-primary" name="cfa46dd5-c6f1-4f22-8ca9-f188a3f86dd3">Misja 1</button>
-
-
+                <button data-api="/api/externaltask/trigger?Id=d4f09c25-0643-4792-a49a-7effccf80d19" class="btn btn-lg btn-outline-primary fetch-button" cel="">Zadanie</button>
+                <button data-api="/api/externaltask/trigger?Id=cfa46dd5-c6f1-4f22-8ca9-f188a3f86dd3" class="btn btn-lg btn-outline-primary fetch-button" cel="">Ładowanie</button>
+                <div id="">&nbsp;</div>
+                <div id="missions">&nbsp;</div>
 <!--                <form action="https://api.anyfleet.idealworks.com/externaltask/trigger" method="get" id="AnyFleet">
     <input type="hidden" id="x-api-key" name="x-api-key" value="DCRMbxspYS5wADsytUBPV7QjC9XEt7jS2a0eJloZ" />
     <input type="hidden" id="key-id" name="key-id" value="dc7ujpb30g" />
@@ -24,33 +23,57 @@
     </div>
 </div>
 
+<div id="status" class="alert alert-success fixed-bottom">&nbsp;</div>
 
 <script src="https://apis.google.com/js/api:client.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
 <script>
-document.getElementById('misja').addEventListener('click', fetchData);
 
-function fetchData() {
-    const MissionId = event.target.getAttribute('name');
-    fetch('/api?id=${buttonId}')
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
+function handleButtonClick(event) {
+  const apiUrl = event.target.dataset.api; // pobieranie adresu URL API z atrybutu data-api przycisku
+  const cel = event.target.getAttribute("cel");
+
+  fetch(apiUrl)
+    .then(response => response.json())
     .then(data => {
-        // Tutaj możesz obsłużyć pobrane dane, np. wyświetlić je na stronie
-        const dataContainer = document.getElementById('dataContainer');
-        dataContainer.innerHTML = JSON.stringify(data);
+      console.log(data);
+      document.getElementById("dataContainer").innerHTML = data.inner;
     })
-    .catch(error => {
-        console.error('There has been a problem with your fetch operation:', error);
-
-    });
+    .catch(error => console.error('Wystąpił błąd podczas pobierania danych:', error));
 }
+
+const buttons = document.querySelectorAll('.fetch-button'); // pobieranie wszystkich przycisków o klasie "fetch-button"
+buttons.forEach(button => {
+  button.addEventListener('click', handleButtonClick);
+});
+
+function updatestatus() {
+    fetch('/api/externaliotdevice')
+    .then(response => response.json())
+    .then(data => {
+<!--      console.log(data);-->
+      document.getElementById("status").innerHTML = data.inner;
+    })
+    .catch(error => console.error('Wystąpił błąd podczas pobierania danych:', error));
+}
+updatestatus();
+setInterval(updatestatus, 10000);
+
+function updatemissions() {
+    fetch('/api/externaltask/active/jobs?Id=0f535547-1ddb-4097-8e79-405be0033a45')
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      document.getElementById("missions").innerHTML = data.inner;
+    })
+    .catch(error => console.error('Wystąpił błąd podczas pobierania danych:', error));
+}
+updatemissions();
+setInterval(updatemissions, 10000);
+
+
 
 </script>
 

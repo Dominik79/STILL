@@ -79,10 +79,13 @@ a.navbar-brand {
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'kontakt' %}">Kontakt</a>
                 </li>
+<!--                <li class="nav-item">-->
+<!--                    <a class="nav-link" href="{% url 'bsh' %}">TESTY GDAŃSK</a>-->
+<!--                </li>-->
 {% endif %}
-{% if user.get_username == "BSH" %}
+{% if user.get_username == "bsh" %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'bsh' %}">{{ user.get_username }}</a>
+                    <a class="nav-link" href="{% url 'bsh' %}">PoC BSH</a>
                 </li>
 {% endif %}
                 {% endif %}

@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ly@@x@t1#1%0(yc(&aev6u3n*rd_mzsd$3&2(on(gzy)mb7#ry'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
+DEBUG = True
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
@@ -38,17 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'pages',
-#    'pages.apps.PagesConfig',
-    'leaflet',
-#    'easy_maps',
     'crispy_forms',
 ]
 
-if os.name == 'nt':
-    OSGEO_VENV = Path(__file__).parents[1] / 'venv/Lib/site-packages/osgeo/'
-    GEOS_LIBRARY_PATH = str(OSGEO_VENV / 'geos_c.dll')
-    GDAL_LIBRARY_PATH = str(OSGEO_VENV / 'gdal303.dll')
-    os.environ["PATH"] += os.pathsep + str(OSGEO_VENV)
+if not DEBUG:
+    INSTALLED_APPS += ['leaflet']
+
+# if os.name == 'nt':
+#     OSGEO_VENV = Path(__file__).parents[1] / 'venv/Lib/site-packages/osgeo/'
+#     GEOS_LIBRARY_PATH = str(OSGEO_VENV / 'geos_c.dll')
+#     GDAL_LIBRARY_PATH = str(OSGEO_VENV / 'gdal303.dll')
+#     os.environ["PATH"] += os.pathsep + str(OSGEO_VENV)
 
 #GDAL_LIBRARY_PATH = r'C:\Users\pl6156\OneDrive - KION Group\WEB\Referencje\venv\Lib\site-packages\osgeo'
 
