@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="HeightTaker container-fluid">
+    <div class="HeightTaker container-fluid">
+        <div class="Wrapper row">
+
+            <div class=" col Content">
+                <div> Wybór misji:</div>
+
+                <button id="misja" class="btn btn.sm btn-outline-primary" name="cfa46dd5-c6f1-4f22-8ca9-f188a3f86dd3">Misja 1</button>
+
+
+<!--                <form action="https://api.anyfleet.idealworks.com/externaltask/trigger" method="get" id="AnyFleet">
+    <input type="hidden" id="x-api-key" name="x-api-key" value="DCRMbxspYS5wADsytUBPV7QjC9XEt7jS2a0eJloZ" />
+    <input type="hidden" id="key-id" name="key-id" value="dc7ujpb30g" />
+    <input type="hidden" id="taskld" name="taskld" value="cfa46dd5-c6f1-4f22-8ca9-f188a3f86dd3" />
+
+                <button type="submit" class="btn btn.sm btn-outline-primary">Misja 1</button>
+</form>-->
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://apis.google.com/js/api:client.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
+<script>
+document.getElementById('misja').addEventListener('click', fetchData);
+
+function fetchData() {
+    const MissionId = event.target.getAttribute('name');
+    fetch('/api?id=${buttonId}')
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // Tutaj możesz obsłużyć pobrane dane, np. wyświetlić je na stronie
+        const dataContainer = document.getElementById('dataContainer');
+        dataContainer.innerHTML = JSON.stringify(data);
+    })
+    .catch(error => {
+        console.error('There has been a problem with your fetch operation:', error);
+
+    });
+}
+
+</script>
+
+{% endblock %}
