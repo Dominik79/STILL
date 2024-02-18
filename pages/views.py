@@ -1,4 +1,4 @@
-import bisect, logging, json
+import bisect, logging, json, requests
 
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -31,6 +31,8 @@ class KlienciPageView(AuthMixin, TemplateView):
         context['Klienci'] = k
         return context
 
+class BSHPageView(AuthMixin, TemplateView):
+    template_name = 'bsh.html'
 
 class TelefonyPageView(AuthMixin, TemplateView):
     template_name = 'telefony.html'
@@ -319,3 +321,31 @@ def wyszukajkod(key):
                 ("98-999", "23"), ("99-199", "08"), ("99-299", "23")]
     temp = bisect.bisect_left(listakod, (key,))
     return listakod[temp - 1][1]
+
+
+def api(request):
+    logger.warning("START")
+    headers = {
+        'x-api-key': 'DCRMbxspYS5wADsytUBPV7QjC9XEt7jS2a0eJloZ',
+        'key-id': 'dc7ujpb30g',
+    }
+    data = {
+        'taskld': request
+    }
+
+    api_url = 'https://api.anyfleet.idealworks.com/externaltask/trigger'
+
+    try:
+        response = requests.get(api_url, headers=headers, json=data)
+
+        # Sprawdzamy, czy otrzymaliśmy odpowiedź sukcesu (status code 200)
+        if response.status_code == 200:
+            # Jeśli tak, zwracamy odpowiedź w formie JSON
+
+            return JsonResponse({'response': response.json()})
+        else:
+            # W przypadku innego kodu odpowiedzi, zwracamy komunikat o błędzie
+            return JsonResponse({'error': 'Something went wrong'}, status=response.status_code)
+    except Exception as e:
+        # Obsługa błędów, np. gdy nie uda się połączyć z zewnętrznym API
+        return JsonResponse({'error': str(e)}, status=500)
