@@ -1,6 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %}
-
+{% load leaflet_tags %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +13,8 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"> -->
     <link rel="stylesheet" href="/static/css/Custom.css">
     <title>Advanced Application Portal</title>
+    {% leaflet_js %}
+    {% leaflet_css %}
     <style>
 .my-primary{
   color: lightYellow ;
