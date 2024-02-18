@@ -99,8 +99,8 @@ class KontaktPageView(AuthMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        if os.path.exists("db.sqlite3"):
-            context['wersja_bazy'] = time.strftime('%Y-%m-%d', time.localtime(os.path.getmtime("db.sqlite3")))
+        if os.path.exists("/var/www/html/db.sqlite3"):
+            context['wersja_bazy'] = time.strftime('%Y-%m-%d', time.localtime(os.path.getmtime("/var/www/html/db.sqlite3")))
         return context
 
 class MapaPageView(AuthMixin, TemplateView):
